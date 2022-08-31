@@ -1,7 +1,7 @@
-const Router = require('express').Router
-const meetupController = require('../controllers/meetupController')
+import { Router } from 'express'
+import meetupController from '../meetup/controllers/meetup.controller'
 
-const router = new Router()
+const router = Router()
 
 router.get('/', meetupController.getAll)
 router.get('/:id', meetupController.getOne)
@@ -9,4 +9,4 @@ router.post('/', meetupController.createMeetup)
 router.put('/:id', meetupController.update)
 router.delete('/:id', meetupController.delete)
 
-module.exports = router
+export default router
