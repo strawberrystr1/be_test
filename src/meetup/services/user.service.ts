@@ -1,15 +1,20 @@
 import db from '../../config/db'
+import { CreateMeetupDTO } from '../dto/create.meetup.dto'
+import { GetMeetupDTO } from '../dto/get.meetup.dto'
+import { DeleteMeetupDTO } from '../dto/delete.meetup.dto'
+import { UpdateMeetupDTO } from '../dto/update.meetup.dto'
 
 class MeetupService {
   getAll() {
     return db.query('SELECT * FROM meetups')
   }
 
-  getOne(id: string) {
-    return db.query('SELECT * FROM meetups WHERE id=$1', [id])
+  getOne(data: GetMeetupDTO) {
+    return db.query('SELECT * FROM meetups WHERE id=$1', [data.id])
   }
 
-  createMeetup(title: string, date: string, description: string, place: string, theme: string, tags: string[]) {
+  createMeetup(data: CreateMeetupDTO) {
+    const { title, date, theme, description, place, tags } = data
     const time = date + ' GMT+0'
 
     return db.query(`
@@ -17,7 +22,9 @@ class MeetupService {
     `, [title, theme, description, time, place, tags])
   }
 
-  updateMeetup(id: string, title: string, date: string, description: string, place: string, theme: string, tags: string[]) {
+  updateMeetup(data: UpdateMeetupDTO) {
+    const { id, title, date, description, place, theme, tags } = data
+
     const timestamp = date ? date + ' GMT+0' : undefined
 
     return db.query(`UPDATE meetups
@@ -33,8 +40,8 @@ class MeetupService {
     [id, title, timestamp, description, place, theme, tags])
   }
 
-  deleteMeetup(id: string) {
-    return db.query('DELETE FROM meetups WHERE id=$1 RETURNING *', [id])
+  deleteMeetup(data: DeleteMeetupDTO) {
+    return db.query('DELETE FROM meetups WHERE id=$1 RETURNING *', [data.id])
   }
 }
 

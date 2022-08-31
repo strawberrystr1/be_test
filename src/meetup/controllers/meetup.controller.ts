@@ -3,6 +3,9 @@ import { Request, Response } from 'express'
 import { QueryResult } from 'pg'
 
 import { CreateMeetupDTO } from '../dto/create.meetup.dto'
+import { UpdateMeetupDTO } from '../dto/update.meetup.dto'
+import { GetMeetupDTO } from '../dto/get.meetup.dto'
+import { DeleteMeetupDTO } from '../dto/delete.meetup.dto'
 
 class MeetupController {
   async getAll(req: Request, res: Response) {
@@ -17,14 +20,14 @@ class MeetupController {
   async getOne(req: Request, res: Response) {
     try {
       const { id } = req.params
-      const meetup = await meetupService.getOne(id)
+      const meetup: QueryResult<GetMeetupDTO> = await meetupService.getOne(new GetMeetupDTO(id))
       res.json(meetup.rows[0])
     } catch (e) {
       res.status(500).json({ message: 'unpredictable error' })
     }
   }
 
-  async createMeetup(req: Request<never, any, CreateMeetupDTO>, res: Response) {
+  async createMeetup(req: Request, res: Response) {
     try {
       const { title, date, description, place, theme, tags } = req.body
 
@@ -32,7 +35,7 @@ class MeetupController {
         return res.status(400).json({ message: 'incorrect input' })
       }
 
-      const meetup: QueryResult<CreateMeetupDTO> = await meetupService.createMeetup(title, date, description, place, theme, tags)
+      const meetup: QueryResult<CreateMeetupDTO> = await meetupService.createMeetup(new CreateMeetupDTO(req.body))
       res.json(meetup.rows[0])
     } catch (e) {
       res.status(500).json({ message: 'unpredictable error' })
@@ -42,9 +45,8 @@ class MeetupController {
   async update(req: Request, res: Response) {
     try {
       const { id } = req.params
-      const { title, date, description, place, theme, tags } = req.body
 
-      const meetup = await meetupService.updateMeetup(id, title, date, description, place, theme, tags)
+      const meetup: QueryResult<UpdateMeetupDTO> = await meetupService.updateMeetup(new UpdateMeetupDTO(id, req.body))
       
       res.json(meetup.rows[0])
     } catch (e) {
@@ -55,7 +57,7 @@ class MeetupController {
   async delete(req: Request, res: Response) {
     try {
       const { id } = req.params
-      const meetup = await meetupService.deleteMeetup(id)
+      const meetup: QueryResult<DeleteMeetupDTO> = await meetupService.deleteMeetup(new DeleteMeetupDTO(id))
       res.json(meetup.rows[0])
     } catch (e) {
       res.status(500).json({ message: 'unpredictable error' })
