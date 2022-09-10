@@ -1,11 +1,21 @@
-import express from 'express'
-import router from './routes/index'
+import express from "express";
+import router from "./routes/index";
+import passport from "passport";
 
-const PORT = 5000
+import "./middleware/passport.middleware";
 
-const app = express()
+const PORT = 5000;
 
-app.use(express.json())
-app.use('/api', router)
+const app = express();
 
-app.listen(PORT, () => console.log('started'))
+app.use(passport.initialize());
+app.use(express.json());
+app.use("/api", router);
+
+
+app.use('/api/meetup/',(req, res, next) => {
+  console.log(req)
+  next()
+})
+
+app.listen(PORT, () => console.log("started"));

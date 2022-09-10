@@ -7,6 +7,7 @@ export const createMeetupSchema = Joi.object({
   place: Joi.string().required(),
   theme: Joi.string().required(),
   tags: Joi.array().items(Joi.string()).required(),
+  createdby: Joi.number().required()
 });
 
 export const updateMeetupSchema = Joi.object({
@@ -16,5 +17,5 @@ export const updateMeetupSchema = Joi.object({
   description: Joi.string(),
   place: Joi.string(),
   theme: Joi.string(),
-  tags: Joi.array().items(Joi.string()),
+  tags: Joi.array().items(Joi.string())
 })
